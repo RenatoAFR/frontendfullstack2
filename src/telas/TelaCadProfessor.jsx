@@ -27,7 +27,7 @@ export default function TelaCadProfessor(props) {
     }
 
     function apagarProfessor(professor) {
-        fetch(urlBase +"/professor", {
+        fetch(urlBase +"http://129.146.68.51/aluno38-pfsii/professor", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(professor)
@@ -47,7 +47,7 @@ export default function TelaCadProfessor(props) {
     }
 
     useEffect(() => {
-        fetch(urlBase + "/professor", {
+        fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/professor", {
             method: "GET"
         }).then((resposta) => {
             return resposta.json();
