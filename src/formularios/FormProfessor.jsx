@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Form, Row, Col, Container, FormLabel, FormControl } from "react-bootstrap"
 import React from "react";
 import { urlBase } from "../assets/definicoes1";
+import SelectionBox from "../componentes/busca/CaixaSelecao";
 
 const boxcad_style = {
     padding: '2px',
@@ -21,6 +22,7 @@ const boxcadall_style = {
 export default function FormProfessor(props) {
     const [validado, setValidado] = useState(false);
     const [professor, setProfessor] = useState(props.professor);
+    const [cursoSelecionado, setCursoSelecionado] = useState({});
 
     function manipulaMudanca(e) {
         const elementForm = e.currentTarget;
@@ -133,10 +135,11 @@ export default function FormProfessor(props) {
                     <Col>
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Curso</strong></Form.Label>
-                            <Form.Select aria-label="Default select example" value={professor.curso} id="curso" onChange={manipulaMudanca} required>
-                                <option value="">Selecionar</option>
-                                <option value="fisioterapia">Fisioterapia</option>
-                            </Form.Select>
+                            <SelectionBox
+                            source={"https://129.146.68.51/aluno38-pfsii/curso/"}
+                            dataKey={"ID"}
+                            exhibitionField={"curso"}
+                            selectFunction={setCursoSelecionado}/>
                         </Form.Group> 
                     </Col>
                 </Row>
