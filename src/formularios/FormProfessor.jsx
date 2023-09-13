@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Form, Row, Col, Container, FormLabel, FormControl } from "react-bootstrap"
 import React from "react";
 import { urlBase } from "../assets/definicoes1";
