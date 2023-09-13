@@ -6,7 +6,7 @@ export default function TabelaCursos(props) {
     function filtraCursos(e) {
         const termoBusca = e.currentTarget.value;
 
-        fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/curso", { method: "GET" })
+        fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/curso", { method: "GET" })
             .then((resposta) => { return resposta.json() })
             .then((listaCursos) => {
                 if (Array.isArray(listaCursos)) {
