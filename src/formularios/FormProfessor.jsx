@@ -36,7 +36,7 @@ export default function FormProfessor(props) {
         if (form.checkValidity()) {
 
             if (!props.modoEdicao) {
-                fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/professor", {
+                fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/professor", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(professor)
