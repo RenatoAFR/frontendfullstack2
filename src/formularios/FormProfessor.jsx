@@ -33,10 +33,11 @@ export default function FormProfessor(props) {
 
     function manipulaSbmissao(evento) {
         const form = evento.currentTarget;
+        professor.curso = cursoSelecionado
         if (form.checkValidity()) {
 
             if (!props.modoEdicao) {
-                fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/professor", {
+                fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/professor", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(professor)

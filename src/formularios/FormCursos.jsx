@@ -34,7 +34,7 @@ export default function FormCursos(props) {
         if (form.checkValidity()) {
 
             if (!props.modoEdicao) {
-                fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/curso", {
+                fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/curso", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(curso)
