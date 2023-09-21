@@ -22,7 +22,7 @@ const boxcadall_style = {
 export default function FormProfessor(props) {
     const [validado, setValidado] = useState(false);
     const [professor, setProfessor] = useState(props.professor);
-    const [cursoSelecionado, setCursoSelecionado] = useState({});
+    const [cursoSelect, setCursoSelecionado] = useState({});
 
     function manipulaMudanca(e) {
         const elementForm = e.currentTarget;
@@ -33,14 +33,14 @@ export default function FormProfessor(props) {
 
     function manipulaSbmissao(evento) {
         const form = evento.currentTarget;
-        professor.curso = cursoSelecionado
+        console.log(cursoSelect)
         if (form.checkValidity()) {
 
             if (!props.modoEdicao) {
                 fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/professor", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(professor)
+                    body: JSON.stringify(cursoSelect)
                 }).then((resposta) => {
                     return resposta.json();
                 }).then((dados) => {
@@ -61,7 +61,7 @@ export default function FormProfessor(props) {
                 fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/professor", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(professor)
+                    body: JSON.stringify(cursoSelect)
                 }).then(() => {
                     props.setModoEdicao(false);
                     alert("Atualizado com sucesso!");
@@ -80,7 +80,7 @@ export default function FormProfessor(props) {
         evento.stopPropagation();
     }
 
-    
+
 
     return (
         <div style={boxcadall_style}>
@@ -137,11 +137,14 @@ export default function FormProfessor(props) {
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Curso</strong></Form.Label>
                             <SelectionBox
-                            source={"https://129.146.68.51/aluno38-pfsii/curso/"}
-                            dataKey={"ID"}
-                            exhibitionField={"curso"}
-                            selectFunction={setCursoSelecionado}/>
-                        </Form.Group> 
+                                source={"https://129.146.68.51/aluno38-pfsii/curso/"}
+                                dataKey={"ID"}
+                                exhibitionField={"curso"}
+                                selectFunction={setCursoSelecionado}
+                                professor={professor}
+                                cursoSelect={cursoSelect}
+                            />
+                        </Form.Group>
                     </Col>
                 </Row>
                 <Row>
