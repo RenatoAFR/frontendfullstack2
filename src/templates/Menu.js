@@ -7,7 +7,7 @@ import React from "react";
 
 
 export default function Menu(props) {
-    
+
 
 
     const navbarStyle = {
@@ -33,6 +33,8 @@ export default function Menu(props) {
                                 <LinkContainer to="/cadastroProfessor"><NavDropdown.Item><strong>PROFESSOR</strong></NavDropdown.Item></LinkContainer>
 
                                 <LinkContainer to="/cadastroCurso"><NavDropdown.Item><strong>CURSOS</strong></NavDropdown.Item></LinkContainer>
+
+                                <LinkContainer to="/cadastroTurma"><NavDropdown.Item><strong>TURMAS</strong></NavDropdown.Item></LinkContainer>
                             </NavDropdown>
 
                         </Nav>
