@@ -43,7 +43,7 @@ export default function TabelaTurmas(props) {
                 <tbody>
                     {
                         props.listaTurmas?.map((turma) => {
-                            return <tr key={turma.NumeroDaTurma}>
+                            return <tr key={turma.Professor}>
                                 <td>{turma.Professor}</td>
                                 <td>{turma.Curso}</td>
                                 <td>{turma.Data}</td>

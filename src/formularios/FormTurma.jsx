@@ -153,7 +153,7 @@ export default function FormTurma(props) {
                 </Row>
                 <Row>
                     <center><Col md={2}>
-                    <Button type="submit" variant="primary">Cadastrar</Button>
+                    <Button type="submit" variant="primary">{props.modoEdicao ? 'Atualizar' : 'Cadastrar'}</Button>
                     {' '}
                     <Button type="button" variant="primary" onClick={()=>{
                         props.exibirTabela(true);
