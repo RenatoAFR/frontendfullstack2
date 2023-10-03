@@ -136,13 +136,13 @@ export default function FormProfessor(props) {
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Curso</strong></Form.Label>
                             <SelectionBox
-                                source={"http://localhost:3001/curso/"}
+                                source={"https://129.146.68.51/aluno38-pfsii/curso/"}
                                 dataKey={"ID"}
                                 exhibitionField={"curso"}
                                 selectFunction={setCursoSelecionado}
-                                />
+                                cursoSelect={professor.curso}
+                            />
                         </Form.Group>
-                        <Form.Control.Feedback type="invalid"> Por Favor Informe o Curso</Form.Control.Feedback>
                     </Col>
                 </Row>
                 <Row>

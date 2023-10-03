@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Form, Row, Col, Spinner } from 'react-bootstrap';
 
-function SelectionBox({ source, dataKey, exhibitionField, selectFunction, cursoSelect }) {
+function SelectionBox({ source, dataKey, exhibitionField, selectFunction, cursoSelect, professor }) {
   const [selectedValue, setSelectedValue] = useState("");
   const [data, setData] = useState([]);
 
@@ -36,18 +36,19 @@ function SelectionBox({ source, dataKey, exhibitionField, selectFunction, cursoS
       <Row md={12}>
         <Col>
           <Form.Select
-          
-            value={selectedValue}
             required
-            onChange={(e) => setSelectedValue(e.target.value)}
+            value={selectedValue}
+            onChange={(e) => {
+              setSelectedValue(e.target.value);
+              selectFunction({ ...professor, curso: e.target.value });
+              console.log(cursoSelect)
+            }
+            }
           >
             <option defaultChecked value={''}>Selecione Um Curso</option>
             {data.map((item) => (
-              <option value={item[exhibitionField]}
-                onClick={()=>{
-                  selectFunction(item[exhibitionField])
-                  console.log(cursoSelect)
-                }}
+              <option
+                value={item[exhibitionField]}
                 key={item[dataKey]}>{item[exhibitionField]}</option>
             ))}
           </Form.Select>

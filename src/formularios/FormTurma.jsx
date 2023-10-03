@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button, Form, Row, Col, Container } from "react-bootstrap"
 import React from "react";
 import { urlBase } from "../assets/definicoes1";
-import BarraBusca from "../componentes/busca/BarraBusca";
 
 const boxcad_style = {
     padding: '2px',
@@ -32,10 +31,10 @@ export default function FormTurma(props) {
     function manipulaSbmissao(evento) {
         const form = evento.currentTarget;
         if (form.checkValidity()) {
+           
             if (props.modoEdicao) {
-
                 fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/turmas", {
-                    method: "POST",
+                    method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(turma)
                 }).then((resposta) => {
@@ -56,12 +55,12 @@ export default function FormTurma(props) {
             else {
 
                 fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/turmas", {
-                    method: "PUT",
+                    method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(turma)
                 }).then(() => {
                     props.setModoEdicao(false);
-                    alert("Atualizado com sucesso!");
+                    alert("Turma Gravada com Sucesso!");
                     props.exibirTabela(true);
                 }).then(() => {
                     window.location.reload();
@@ -161,7 +160,7 @@ export default function FormTurma(props) {
                 <Row>
                     <center><Col>
                         <Button type="submit" variant="primary">{props.modoEdicao ? 'Atualizar' : 'Cadastrar'}</Button>
-                    </Col>
+                        </Col>
                         <Col>
                             <Button type="submit" variant="primary" onClick={() => {
                                 props.exibirTabela(true);
