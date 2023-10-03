@@ -33,14 +33,15 @@ export default function FormProfessor(props) {
 
     function manipulaSbmissao(evento) {
         const form = evento.currentTarget;
-        console.log(cursoSelect)
+        professor.curso = cursoSelect
+        console.log(professor)
         if (form.checkValidity()) {
 
             if (!props.modoEdicao) {
-                fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/professor", {
+                fetch(urlBase + "/professor", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(cursoSelect)
+                    body: JSON.stringify(professor)
                 }).then((resposta) => {
                     return resposta.json();
                 }).then((dados) => {
@@ -58,10 +59,10 @@ export default function FormProfessor(props) {
             }
             else {
 
-                fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/professor", {
+                fetch(urlBase + "/professor", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(cursoSelect)
+                    body: JSON.stringify(professor)
                 }).then(() => {
                     props.setModoEdicao(false);
                     alert("Atualizado com sucesso!");
@@ -79,8 +80,6 @@ export default function FormProfessor(props) {
         evento.preventDefault();
         evento.stopPropagation();
     }
-
-
 
     return (
         <div style={boxcadall_style}>
@@ -137,14 +136,13 @@ export default function FormProfessor(props) {
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Curso</strong></Form.Label>
                             <SelectionBox
-                                source={"https://129.146.68.51/aluno38-pfsii/curso/"}
+                                source={"http://localhost:3001/curso/"}
                                 dataKey={"ID"}
                                 exhibitionField={"curso"}
                                 selectFunction={setCursoSelecionado}
-                                professor={professor}
-                                cursoSelect={cursoSelect}
-                            />
+                                />
                         </Form.Group>
+                        <Form.Control.Feedback type="invalid"> Por Favor Informe o Curso</Form.Control.Feedback>
                     </Col>
                 </Row>
                 <Row>

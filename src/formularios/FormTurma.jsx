@@ -1,4 +1,4 @@
- import { useState } from "react";
+import { useState } from "react";
 import { Button, Form, Row, Col, Container } from "react-bootstrap"
 import React from "react";
 import { urlBase } from "../assets/definicoes1";
@@ -8,7 +8,7 @@ const boxcad_style = {
     padding: '2px',
     borderRadius: '10px',
     border: '2px solid black',
-    width:'380px'
+    width: '380px'
 }
 
 const boxcadall_style = {
@@ -22,19 +22,19 @@ export default function FormTurma(props) {
     const [validado, setValidado] = useState(false);
     const [turma, setTurma] = useState(props.turma);
 
-    function manipulaMudanca(e){
+    function manipulaMudanca(e) {
         const elementForm = e.currentTarget;
         const id = elementForm.id;
         const valor = elementForm.value;
-        setTurma({...turma, [id]:valor});
+        setTurma({ ...turma, [id]: valor });
     }
 
     function manipulaSbmissao(evento) {
         const form = evento.currentTarget;
         if (form.checkValidity()) {
-          if (props.modoEdicao) {
+            if (props.modoEdicao) {
 
-            fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/turmas", {
+                fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/turmas", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(turma)
@@ -76,27 +76,27 @@ export default function FormTurma(props) {
         evento.preventDefault();
         evento.stopPropagation();
     }
-          
-    
+
+
     return (
         <div style={boxcadall_style}>
             <Container className="text-center" style={boxcad_style}>
                 <h3>CADASTRO DE TURMAS</h3>
-                </Container>
+            </Container>
             <Form noValidate validated={validado} onSubmit={manipulaSbmissao}>
                 <Row>
                     <Col>
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Professor</strong></Form.Label>
-                            <Form.Control type="text" placeholder="Nome do Professor" required value={turma.Professor} id="Professor" onChange={manipulaMudanca}/>
+                            <Form.Control type="text" placeholder="Nome do Professor" required value={turma.Professor} id="Professor" onChange={manipulaMudanca} />
                         </Form.Group>
                         <Form.Control.Feedback type="invalid"> Por Favor Informe o Nome!</Form.Control.Feedback>
                     </Col>
-                    
+
                     <Col>
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Curso</strong></Form.Label>
-                            <Form.Control type="text" placeholder="Fisioterapia" required value={turma.Curso} id="Curso" onChange={manipulaMudanca}/>
+                            <Form.Control type="text" placeholder="Fisioterapia" required value={turma.Curso} id="Curso" onChange={manipulaMudanca} />
                         </Form.Group>
                         <Form.Control.Feedback type="invalid"> Por Favor Informe o Curso!</Form.Control.Feedback>
                     </Col>
@@ -106,17 +106,24 @@ export default function FormTurma(props) {
                     <Col>
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Data</strong></Form.Label>
-                            <Form.Control type="date" placeholder="" required value={turma.Data} id="Data" onChange={manipulaMudanca}/>
+                            <Form.Control type="date" placeholder="" required value={turma.Data} id="Data" onChange={manipulaMudanca} />
                         </Form.Group>
                         <Form.Control.Feedback type="invalid"> Por Favor Informe a Data!</Form.Control.Feedback>
                     </Col>
 
                     <Col>
+
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Hora</strong></Form.Label>
-                            <Form.Control type="text" placeholder="13:00" required value={turma.Hora} id="Hora" onChange={manipulaMudanca}/>
+                            <Form.Select required aria-label="Default select example" value={turma.Hora} id="Hora" onChange={manipulaMudanca}>
+                                <option value={''} selected>Selecione</option>
+                                <option value="1">07:30</option>
+                                <option value="2">09:50</option>
+                                <option value="3">13:30</option>
+                                <option value="4">15:50</option>
+                            </Form.Select>
+                            <Form.Control.Feedback type="invalid"> Por Favor Informe a Hora!</Form.Control.Feedback>
                         </Form.Group>
-                        <Form.Control.Feedback type="invalid"> Por Favor Informe a Hora!</Form.Control.Feedback>
                     </Col>
 
                     <Col>
@@ -138,7 +145,7 @@ export default function FormTurma(props) {
                         </Form.Group>
                     </Col>
                 </Row>
-                
+
                 <Row>
                     <Col>
                         <Form.Group className="mb-3">
@@ -152,13 +159,14 @@ export default function FormTurma(props) {
                     </Col>
                 </Row>
                 <Row>
-                    <center><Col md={2}>
-                    <Button type="submit" variant="primary">{props.modoEdicao ? 'Atualizar' : 'Cadastrar'}</Button>
-                    {' '}
-                    <Button type="button" variant="primary" onClick={()=>{
-                        props.exibirTabela(true);
-                    }}>Voltar</Button>
-                    </Col></center>
+                    <center><Col>
+                        <Button type="submit" variant="primary">{props.modoEdicao ? 'Atualizar' : 'Cadastrar'}</Button>
+                    </Col>
+                        <Col>
+                            <Button type="submit" variant="primary" onClick={() => {
+                                props.exibirTabela(true);
+                            }}>Voltar</Button>
+                        </Col></center>
                 </Row>
             </Form>
         </div>
