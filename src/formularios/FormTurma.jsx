@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form, Row, Col, Container } from "react-bootstrap"
 import React from "react";
 import { urlBase } from "../assets/definicoes1";
+import BarraBusca from "../componentes/busca/BarraBusca";
 
 const boxcad_style = {
     padding: '2px',
@@ -14,12 +15,13 @@ const boxcadall_style = {
     padding: '5px',
     borderRadius: '10px',
     border: '3px solid black',
-    height: '375px'
+    height: '475px'
 }
 
 export default function FormTurma(props) {
     const [validado, setValidado] = useState(false);
     const [turma, setTurma] = useState(props.turma);
+
 
     function manipulaMudanca(e) {
         const elementForm = e.currentTarget;
@@ -31,7 +33,11 @@ export default function FormTurma(props) {
     function manipulaSbmissao(evento) {
         const form = evento.currentTarget;
         if (form.checkValidity()) {
-           
+            const nome = {
+                cpf: professorSelecionado.cpf,
+                nome: professorSelecionado.nome,
+            };
+
             if (props.modoEdicao) {
                 fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/turmas", {
                     method: "PUT",
@@ -76,6 +82,27 @@ export default function FormTurma(props) {
         evento.stopPropagation();
     }
 
+    const [professorSelecionado, setProfessorSelecionado] = useState({});
+    const [listaProfessores, setListaProfessores] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/professor", { method: "GET" });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log("Data from API:", data);
+                setListaProfessores(data);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        fetchData();
+    }, []);
+
+
 
     return (
         <div style={boxcadall_style}>
@@ -83,22 +110,44 @@ export default function FormTurma(props) {
                 <h3>CADASTRO DE TURMAS</h3>
             </Container>
             <Form noValidate validated={validado} onSubmit={manipulaSbmissao}>
-                <Row>
-                    <Col>
-                        <Form.Group className="mb-3">
-                            <Form.Label><strong>Professor</strong></Form.Label>
-                            <Form.Control type="text" placeholder="Nome do Professor" required value={turma.Professor} id="Professor" onChange={manipulaMudanca} />
-                        </Form.Group>
-                        <Form.Control.Feedback type="invalid"> Por Favor Informe o Nome!</Form.Control.Feedback>
-                    </Col>
 
-                    <Col>
-                        <Form.Group className="mb-3">
-                            <Form.Label><strong>Curso</strong></Form.Label>
-                            <Form.Control type="text" placeholder="Fisioterapia" required value={turma.Curso} id="Curso" onChange={manipulaMudanca} />
-                        </Form.Group>
-                        <Form.Control.Feedback type="invalid"> Por Favor Informe o Curso!</Form.Control.Feedback>
-                    </Col>
+                <Row>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Professor:</Form.Label>
+                        {}
+                        <BarraBusca
+                            placeHolder={"Informe um Professor"}
+                            dados={listaProfessores}
+                            campoChave={"cpf"}
+                            campoBusca={"nome"}
+                            funcaoSelecao={(professorSelecionado) => {
+                                setProfessorSelecionado(professorSelecionado);
+                                setTurma({ ...turma, nome: professorSelecionado });
+                            }}
+                            valor={""}
+                        />
+                        { console.log(listaProfessores) }
+                        <Form.Control.Feedback type="invalid">
+                            Por favor, insira o nome do Professor!
+                        </Form.Control.Feedback>
+
+                        <Form.Control
+                            type="text"
+                            placeholder="Nome do Professor"
+                            value={professorSelecionado?.nome || ""}
+                            onChange={(e) => {
+
+                            }}
+                        />
+
+                    </Form.Group>
+
+                </Row>
+
+                <Row>                    
+
+                    
                 </Row>
 
                 <Row>
@@ -160,7 +209,7 @@ export default function FormTurma(props) {
                 <Row>
                     <center><Col>
                         <Button type="submit" variant="primary">{props.modoEdicao ? 'Atualizar' : 'Cadastrar'}</Button>
-                        </Col>
+                    </Col>
                         <Col>
                             <Button type="submit" variant="primary" onClick={() => {
                                 props.exibirTabela(true);
