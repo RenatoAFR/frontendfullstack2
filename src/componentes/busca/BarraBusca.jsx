@@ -22,14 +22,12 @@ function BarraBusca({
     }, [termoBusca]);
 
     function filtrarResultado() {
-        setDadosLista(dados.filter((item) => {
-            return termoBusca.length > 1 ? item[campoBusca].toLowerCase().includes(termoBusca.toLowerCase()) : false
-        }
-        )
+        const dadosFiltrados = dados.filter((item) =>
+          item[campoBusca].toLowerCase().includes(termoBusca.toLowerCase())
         );
-
-        setDadosLista(dados);
-    }
+    
+        setDadosLista(dadosFiltrados);
+      }
 
     return (
         <Container>

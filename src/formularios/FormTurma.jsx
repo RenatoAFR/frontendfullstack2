@@ -36,7 +36,10 @@ export default function FormTurma(props) {
             const nome = {
                 cpf: professorSelecionado.cpf,
                 nome: professorSelecionado.nome,
+                curso: professorSelecionado.curso,
             };
+            setTurma({...turma}, turma.Professor=nome.nome, turma.Curso=nome.curso)
+    
 
             if (props.modoEdicao) {
                 fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/turmas", {
@@ -165,10 +168,10 @@ export default function FormTurma(props) {
                             <Form.Label><strong>Hora</strong></Form.Label>
                             <Form.Select required aria-label="Default select example" value={turma.Hora} id="Hora" onChange={manipulaMudanca}>
                                 <option value={''} selected>Selecione</option>
-                                <option value="1">07:30</option>
-                                <option value="2">09:50</option>
-                                <option value="3">13:30</option>
-                                <option value="4">15:50</option>
+                                <option value="07:30">07:30</option>
+                                <option value="09:50">09:50</option>
+                                <option value="13:30">13:30</option>
+                                <option value="15:50">15:50</option>
                             </Form.Select>
                             <Form.Control.Feedback type="invalid"> Por Favor Informe a Hora!</Form.Control.Feedback>
                         </Form.Group>

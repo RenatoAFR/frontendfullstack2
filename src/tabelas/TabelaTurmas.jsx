@@ -3,6 +3,16 @@ import { urlBase } from "../assets/definicoes1";
 
 export default function TabelaTurmas(props) {
 
+    function formatDate(date) {
+        var newDate = new Date(date);
+        var day = newDate.getUTCDate();
+        var month = newDate.getUTCMonth() + 1;
+        var year = newDate.getFullYear();
+
+        var formatedDate = `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year.toString()}`;
+        return formatedDate
+    }
+
     function filtrarTurmas(e) {
         const termoBusca = e.currentTarget.value;
 
@@ -46,7 +56,7 @@ export default function TabelaTurmas(props) {
                             return <tr key={turma.Professor}>
                                 <td>{turma.Professor}</td>
                                 <td>{turma.Curso}</td>
-                                <td>{turma.Data}</td>
+                                <td>{formatDate(turma.Data)}</td>
                                 <td>{turma.Hora}</td>
                                 <td>{turma.QtdAlunos}</td>
                                 <td>{turma.TipoDeAula}</td>
