@@ -1,12 +1,11 @@
 import { Button, Container, Table, Form, Row } from "react-bootstrap";
-import { urlBase } from "../assets/definicoes1";
 
 export default function TabelaProfessores(props) {
     
     function filtraProfessores(e) {
         const termoBusca = e.currentTarget.value;
 
-        fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/professor", { method: "GET" })
+        fetch("https://129.146.68.51/aluno38-pfsii/professor", { method: "GET" })
             .then((resposta) => { return resposta.json() })
             .then((listaProfessores) => {
                 if (Array.isArray(listaProfessores)) {

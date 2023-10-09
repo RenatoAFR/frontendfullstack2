@@ -3,7 +3,6 @@ import FormTurma from "../formularios/FormTurma";
 import TabelaTurmas from "../tabelas/TabelaTurmas";
 import { useState, useEffect } from "react";
 import { Container, Alert } from "react-bootstrap";
-import { urlBase } from "../assets/definicoes1";
 
 export default function TelaCadTurma(props) {
     const [turma, setTurmas] = useState([]);
@@ -27,7 +26,7 @@ export default function TelaCadTurma(props) {
     }
     
     function apagarTurma(turma) {
-        fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/turmas", {
+        fetch("https://129.146.68.51/aluno38-pfsii/turmas", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(turma)
@@ -47,7 +46,7 @@ export default function TelaCadTurma(props) {
     }
 
     useEffect(() => {
-        fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/turmas", {
+        fetch("https://129.146.68.51/aluno38-pfsii/turmas", {
             method: "GET"
         }).then((resposta) => {
             return resposta.json();

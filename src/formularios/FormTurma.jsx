@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, Form, Row, Col, Container } from "react-bootstrap"
 import React from "react";
-import { urlBase } from "../assets/definicoes1";
 import BarraBusca from "../componentes/busca/BarraBusca";
 
 const boxcad_style = {
@@ -42,7 +41,7 @@ export default function FormTurma(props) {
     
 
             if (props.modoEdicao) {
-                fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/turmas", {
+                fetch("https://129.146.68.51/aluno38-pfsii/turmas", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(turma)
@@ -63,7 +62,7 @@ export default function FormTurma(props) {
             }
             else {
 
-                fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/turmas", {
+                fetch("https://129.146.68.51/aluno38-pfsii/turmas", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(turma)
@@ -91,7 +90,7 @@ export default function FormTurma(props) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/professor", { method: "GET" });
+                const response = await fetch("https://129.146.68.51/aluno38-pfsii/professor", { method: "GET" });
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }

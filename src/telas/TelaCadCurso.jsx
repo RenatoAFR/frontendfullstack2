@@ -3,7 +3,6 @@ import FormCursos from "../formularios/FormCursos";
 import TabelaCursos from "../tabelas/TabelaCurso";
 import { useState, useEffect } from "react";
 import { Container, Alert } from "react-bootstrap";
-import { urlBase } from "../assets/definicoes5";
 
 export default function TelaCadCurso(props) {
     const [exibirTabela, setExibirTabela] = useState(true);
@@ -23,7 +22,7 @@ export default function TelaCadCurso(props) {
     }
 
     function apagarCurso(curso) {
-        fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/curso", {
+        fetch("https://129.146.68.51/aluno38-pfsii/curso", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(curso)
@@ -43,7 +42,7 @@ export default function TelaCadCurso(props) {
     }
 
     useEffect(() => {
-        fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/curso", {
+        fetch("https://129.146.68.51/aluno38-pfsii/curso", {
             method: "GET"
         }).then((resposta) => {
             return resposta.json();

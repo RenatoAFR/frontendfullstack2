@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button, Form, Row, Col, Container, FormLabel, FormControl } from "react-bootstrap"
 import React from "react";
-import { urlBase } from "../assets/definicoes5";
 
 const boxcad_style = {
     padding: '2px',
@@ -34,7 +33,7 @@ export default function FormCursos(props) {
         if (form.checkValidity()) {
 
             if (!props.modoEdicao) {
-                fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/curso", {
+                fetch("https://129.146.68.51/aluno38-pfsii/curso", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(curso)
@@ -55,7 +54,7 @@ export default function FormCursos(props) {
             }
             else {
 
-                fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/curso", {
+                fetch("https://129.146.68.51/aluno38-pfsii/curso", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(curso)

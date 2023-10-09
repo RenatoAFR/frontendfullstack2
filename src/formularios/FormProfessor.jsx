@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button, Form, Row, Col, Container, FormLabel, FormControl } from "react-bootstrap"
 import React from "react";
-import { urlBase } from "../assets/definicoes1";
 import SelectionBox from "../componentes/busca/CaixaSelecao";
 
 const boxcad_style = {
@@ -38,7 +37,7 @@ export default function FormProfessor(props) {
         if (form.checkValidity()) {
 
             if (!props.modoEdicao) {
-                fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/professor", {
+                fetch("https://129.146.68.51/aluno38-pfsii/professor", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(cursoSelect)
@@ -59,7 +58,7 @@ export default function FormProfessor(props) {
             }
             else {
 
-                fetch(urlBase + "/https://129.146.68.51/aluno38-pfsii/professor", {
+                fetch("/https://129.146.68.51/aluno38-pfsii/professor", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(professor)
@@ -136,7 +135,7 @@ export default function FormProfessor(props) {
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Curso</strong></Form.Label>
                             <SelectionBox
-                                source={"http://129.146.68.51/aluno38-pfsii/curso/"}
+                                source={"https://129.146.68.51/aluno38-pfsii/curso/"}
                                 dataKey={"ID"}
                                 exhibitionField={"curso"}
                                 selectFunction={setCursoSelecionado}
