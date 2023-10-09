@@ -6,7 +6,7 @@ export default function TabelaTurmas(props) {
     function filtrarTurmas(e) {
         const termoBusca = e.currentTarget.value;
 
-        fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/turmas", { method: "GET" })
+        fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/turmas", { method: "GET" })
             .then((resposta) => { return resposta.json() })
             .then((listaTurmas) => {
                 if (Array.isArray(listaTurmas)) {

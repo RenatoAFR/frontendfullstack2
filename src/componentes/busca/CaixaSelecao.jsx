@@ -38,6 +38,7 @@ function SelectionBox({ source, dataKey, exhibitionField, selectFunction, cursoS
           <Form.Select
             required
             value={selectedValue}
+            
             onChange={(e) => {
               setSelectedValue(e.target.value);
               selectFunction({ ...professor, curso: e.target.value });
@@ -49,6 +50,7 @@ function SelectionBox({ source, dataKey, exhibitionField, selectFunction, cursoS
             {data.map((item) => (
               <option
                 value={item[exhibitionField]}
+                
                 key={item[dataKey]}>{item[exhibitionField]}</option>
             ))}
           </Form.Select>

@@ -39,7 +39,7 @@ export default function FormTurma(props) {
             };
 
             if (props.modoEdicao) {
-                fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/turmas", {
+                fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/turmas", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(turma)
@@ -60,7 +60,7 @@ export default function FormTurma(props) {
             }
             else {
 
-                fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/turmas", {
+                fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/turmas", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(turma)
@@ -88,7 +88,7 @@ export default function FormTurma(props) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/professor", { method: "GET" });
+                const response = await fetch(urlBase + "http://129.146.68.51/aluno38-pfsii/professor", { method: "GET" });
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }

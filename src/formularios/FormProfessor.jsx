@@ -33,7 +33,7 @@ export default function FormProfessor(props) {
 
     function manipulaSbmissao(evento) {
         const form = evento.currentTarget;
-        professor.curso = cursoSelect
+        
         console.log(professor)
         if (form.checkValidity()) {
 
@@ -41,14 +41,14 @@ export default function FormProfessor(props) {
                 fetch(urlBase + "https://129.146.68.51/aluno38-pfsii/professor", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(professor)
+                    body: JSON.stringify(cursoSelect)
                 }).then((resposta) => {
                     return resposta.json();
                 }).then((dados) => {
                     if (dados.status) {
                         props.setModoEdicao(false);
                         let professores = props.listaProfessores;
-                        professores.push(professor);
+                        professores.push(cursoSelect);
                         props.exibirTabela(true);
                         window.location.reload();
                     }
@@ -136,11 +136,12 @@ export default function FormProfessor(props) {
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Curso</strong></Form.Label>
                             <SelectionBox
-                                source={"https://129.146.68.51/aluno38-pfsii/curso/"}
+                                source={"http://129.146.68.51/aluno38-pfsii/curso/"}
                                 dataKey={"ID"}
                                 exhibitionField={"curso"}
                                 selectFunction={setCursoSelecionado}
-                                cursoSelect={professor.curso}
+                                cursoSelect={cursoSelect}
+                                professor={professor}
                             />
                         </Form.Group>
                     </Col>
