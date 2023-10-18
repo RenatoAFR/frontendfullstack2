@@ -1,88 +1,88 @@
-import Pagina from "../templates/Pagina";
 import FormCursos from "../formularios/FormCursos";
-import TabelaCursos from "../tabelas/TabelaCurso";
+import { Container } from "react-bootstrap";
+import TabelaCursos from "../tabelas/TabelaCursos";
 import { useState, useEffect } from "react";
-import { Container, Alert } from "react-bootstrap";
+import Pagina from "../templates/Pagina";
+import { urlBase3 } from "../utilitarios/definiçoes";
 
-export default function TelaCadCurso(props) {
-    const [exibirTabela, setExibirTabela] = useState(true);
+export default function TelaCadastroCursos(props) {
     const [cursos, setCursos] = useState([]);
+    const [exibirTabela, setExibirTabela] = useState(true);
     const [modoEdicao, setModoEdicao] = useState(false);
-    const [atualizando, setAtualizando] = useState(false);
-    const [cursoEmEdicao, setCursoEdicao] = useState({
-        ID: '',
-        curso: '',
-    })
+    const [cursoEmEdicao, setCursoEmEdicao] = useState({
+        codigoCur: "",
+        cursos: ""
+    });
 
-    function edicaoCurso(curso) {
-        setAtualizando(true);
-        setCursoEdicao(curso);
-        setExibirTabela(false);
-        setModoEdicao(true);
-    }
-
-    function apagarCurso(curso) {
-        fetch("https://129.146.68.51/aluno38-pfsii/curso", {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(curso)
-        }).then((resposta) => {
-            return resposta.json();
-        }).then((retorno) => {
-            if (retorno.mensagem) {
-                alert("Curso excluído");
-                setExibirTabela(true);
-                window.location.reload();
-            }
-            else {
-                alert("Não foi possível excluir")
-
-            }
-        })
-    }
 
     useEffect(() => {
-        fetch("https://129.146.68.51/aluno38-pfsii/curso", {
-            method: "GET"
-        }).then((resposta) => {
-            return resposta.json();
-        }).then((dados) => {
-            if (Array.isArray(dados)) {
-                setCursos(dados);
-            } 
-            else {
-
-            }
-        });
+        fetch(urlBase3, { method: "GET" })
+            .then((resposta) => { return resposta.json() })
+            .then((dados) => {
+                if (Array.isArray(dados)) {
+                    setCursos(dados);
+                }
+                else {
+                    window.alert("Erro ao fazer requisição do dados! Tente novamente")
+                }
+            });
     }, []);
 
+
+    function prepararCursoEdicao(curso) {
+        setModoEdicao(true);
+        setCursoEmEdicao(curso);
+        setExibirTabela(false);
+    }
+
+    function excluirCurso(curso) {
+        if (window.confirm("Confirmar exclusão?")) {
+            fetch(urlBase3, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(curso)
+            })
+                .then((resposta) => resposta.json())
+                .then((resposta) => {
+                    window.alert("Curso excluído!");
+
+                    setCursos((antigos) =>
+                        antigos.filter((c) => c.codigoCur !== curso.codigoCur)
+                    );
+                })
+                .catch((erro) => {
+                    window.alert("Erro ao excluir categoria: " + erro.message);
+                });
+        }
+    }
+
+
     return (
-        <Pagina>
-            <Container className="border m-6">
-                <Alert variant={"secondary"} className="text-center m-3">
-                    <font size="6"><strong>Cadastro de Cursos</strong></font></Alert>
-                {
-                    exibirTabela ?
-                        <TabelaCursos
-                            listaCursos={cursos}
-                            setCursos={setCursos}
-                            exibirTabela={setExibirTabela}
-                            editarCurso={edicaoCurso}
-                            excluirCurso={apagarCurso}
-                            setModoEdicao={setModoEdicao}
-                            edicaoCurso={setCursoEdicao} />
-                        :
-                        <FormCursos
-                            listaCursos={cursos}
-                            setCursos={setCursos}
-                            exibirTabela={setExibirTabela}
-                            modoEdicao={modoEdicao}
-                            setModoEdicao={setModoEdicao}
-                            atualizando={atualizando}
-                            curso={cursoEmEdicao}
-                            edicaoCurso={setModoEdicao} />
-                }
-            </Container>
-        </Pagina>
+        <>
+            {
+                exibirTabela ?
+                    <Pagina>
+                        <Container id="brasao">
+                            <TabelaCursos listaCursos={cursos}
+                                setCursos={setCursos}
+                                exibirTabela={setExibirTabela}
+                                editarCurso={prepararCursoEdicao}
+                                excluir={excluirCurso} />
+                        </Container>
+                    </Pagina>
+                    :
+                    <Pagina>
+                        <Container id="brasao">
+                            <FormCursos listaCursos={cursos}
+                                setCursos={setCursos}
+                                exibirTabela={setExibirTabela}
+                                modoEdicao={modoEdicao}
+                                setModoEdicao={setModoEdicao}
+                                curso={cursoEmEdicao}
+                            />
+                        </Container>
+                    </Pagina>
+            }
+        </>
     );
 }

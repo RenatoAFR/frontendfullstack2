@@ -1,92 +1,91 @@
-import Pagina from "../templates/Pagina";
 import FormProfessor from "../formularios/FormProfessor";
-import TabelaProfessores from "../tabelas/TabelaProfessor";
+import { Container } from "react-bootstrap";
+import TabelaProfessor from "../tabelas/TabelaProfessor";
 import { useState, useEffect } from "react";
-import { Container, Alert } from "react-bootstrap";
+import Pagina from "../templates/Pagina";
+import { urlBase } from "../utilitarios/definiçoes";
 
-export default function TelaCadProfessor(props) {
+export default function TelaCadastroProfessor(props) {
+    const [professor, setProfessor] = useState([]);
     const [exibirTabela, setExibirTabela] = useState(true);
-    const [professores, setProfessores] = useState([]);
     const [modoEdicao, setModoEdicao] = useState(false);
-    const [atualizando, setAtualizando] = useState(false);
-    const [professorEmEdicao, setProfessorEdicao] = useState({
-        ID: '',
-        cpf: '',
-        nome: '',
-        tel: '',
-        email: '',
-        curso: '',
-    })
+    const [professorEmEdicao, setProfessorEmEdicao] = useState({
+        nome: "",
+        cpf: "",
+        codigo: "",
+        telefone: "",
+        codCurso: ""
+    });
 
-    function edicaoProfessor(professor) {
-        setAtualizando(true);
-        setProfessorEdicao(professor);
-        setExibirTabela(false);
-        setModoEdicao(true);
-    }
-
-    function apagarProfessor(professor) {
-        fetch("https://129.146.68.51/aluno38-pfsii/professor", {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(professor)
-        }).then((resposta) => {
-            return resposta.json();
-        }).then((retorno) => {
-            if (retorno.mensagem) {
-                alert("Professor excluído");
-                setExibirTabela(true);
-                window.location.reload();
-            }
-            else {
-                alert("Não foi possível excluir")
-                
-            }
-        })
-    }
 
     useEffect(() => {
-        fetch("https://129.146.68.51/aluno38-pfsii/professor", {
-            method: "GET"
-        }).then((resposta) => {
-            return resposta.json();
-        }).then((dados) => {
-            if (Array.isArray(dados)) {
-                setProfessores(dados);
-            }
-            else {
-
-            }
-        });
+        fetch(urlBase, { method: "GET" })
+            .then((resposta) => { return resposta.json() })
+            .then((dados) => {
+                if (Array.isArray(dados)) {
+                    setProfessor(dados);
+                }
+                else {
+                    window.alert("Erro ao fazer requisição do dados! Tente novamente")
+                }
+            });
     }, []);
 
-    return(
-        <Pagina>
-            <Container className="border m-6">
-                <Alert variant={"secondary"} className="text-center m-3">
-                    <font size="6"><strong>Cadastro de Professor</strong></font></Alert>
-                {
-                    exibirTabela ?
-                        <TabelaProfessores 
-                            listaProfessores={professores}
-                            setProfessores={setProfessores}
-                            exibirTabela={setExibirTabela}
-                            editarProfessor={edicaoProfessor}
-                            excluirProfessor={apagarProfessor}
-                            setModoEdicao={setModoEdicao}
-                            edicaoProfessor={setProfessorEdicao} />
-                        :
-                        <FormProfessor 
-                            listaProfessores={professores}
-                            setProfessores={setProfessores}
-                            exibirTabela={setExibirTabela}
-                            modoEdicao={modoEdicao}
-                            setModoEdicao={setModoEdicao}
-                            atualizando={atualizando}
-                            professor={professorEmEdicao}
-                            edicaoProfessor={setModoEdicao} />
-                }
-            </Container>
-        </Pagina>
+
+    function prepararProfessorEdicao(professor) {
+        setModoEdicao(true);
+        setProfessorEmEdicao(professor);
+        setExibirTabela(false);
+    }
+
+    function excluirProfessor(professor) {
+        if (window.confirm("Confirmar exclusão?")) {
+            fetch(urlBase, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(professor)
+            })
+                .then((resposta) => resposta.json())
+                .then((resposta) => {
+                    window.alert("Professor excluído!");
+
+                    setProfessor((antigos) =>
+                        antigos.filter((v) => v.codigo !== professor.codigo)
+                    );
+                })
+                .catch((erro) => {
+                    window.alert("Erro ao excluir professor: " + erro.message);
+                });
+        }
+    }
+
+
+    return (
+        <>
+            {
+                exibirTabela ?
+                    <Pagina>
+                        <Container id="brasao">
+                            <TabelaProfessor listaProfessores={professor}
+                                setProfessor={setProfessor}
+                                exibirTabela={setExibirTabela}
+                                editarProfessor={prepararProfessorEdicao}
+                                excluir={excluirProfessor} />
+                        </Container>
+                    </Pagina>
+                    :
+                    <Pagina>
+                        <Container id="brasao">
+                            <FormProfessor listaProfessores={professor}
+                                setProfessor={setProfessor}
+                                exibirTabela={setExibirTabela}
+                                modoEdicao={modoEdicao}
+                                setModoEdicao={setModoEdicao}
+                                professor={professorEmEdicao}
+                            />
+                        </Container>
+                    </Pagina>
+            }
+        </>
     );
 }

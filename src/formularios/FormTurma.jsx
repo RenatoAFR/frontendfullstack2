@@ -1,224 +1,259 @@
-import { useState, useEffect } from "react";
-import { Button, Form, Row, Col, Container } from "react-bootstrap"
-import React from "react";
-import BarraBusca from "../componentes/busca/BarraBusca";
+import React, { useEffect, useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import { urlBase, urlBase2 } from '../utilitarios/definiçoes';
+import CaixaSelecao from '../utilitarios/Combobox';
+import TabelaProfessoresSelecionados from './tabelaProfessoresSelecionados';
 
 const boxcad_style = {
-    padding: '2px',
-    borderRadius: '10px',
-    border: '2px solid black',
-    width: '380px'
+  padding: '2px',
+  borderRadius: '10px',
+  border: '2px solid black',
+  width: '350px',
 }
 
 const boxcadall_style = {
-    padding: '5px',
-    borderRadius: '10px',
-    border: '3px solid black',
-    height: '475px'
+  padding: '5px',
+  borderRadius: '10px',
+  border: '3px solid black',
+  height: '710px'
 }
 
 export default function FormTurma(props) {
-    const [validado, setValidado] = useState(false);
-    const [turma, setTurma] = useState(props.turma);
+  const [validated, setValidated] = useState(false);
+  const [turma, setTurma] = useState(props.turma);
+  const [professorSelecionado, setProfessorSelecionado] = useState({});
+  const [listaProfessoresSelecionados, setListaProfessoresSelecionados]= useState([]);
 
+  function manipularMudanca(e) {
+    const elemForm = e.currentTarget;
+    const id = elemForm.id;
+    const valor = elemForm.value;
+    setTurma({...turma,[id]: valor,});
+  };
 
-    function manipulaMudanca(e) {
-        const elementForm = e.currentTarget;
-        const id = elementForm.id;
-        const valor = elementForm.value;
-        setTurma({ ...turma, [id]: valor });
+  function validarData(){
+    const dataInserida = new Date(turma.data);
+    const dataAtual = new Date();
+    if(dataInserida < dataAtual){
+      alert('Informe uma data válida!');
+      setTurma({...turma,data: ''});
     }
+  };
 
-    function manipulaSbmissao(evento) {
-        const form = evento.currentTarget;
-        if (form.checkValidity()) {
-            const nome = {
-                cpf: professorSelecionado.cpf,
-                nome: professorSelecionado.nome,
-                curso: professorSelecionado.curso,
-            };
-            setTurma({...turma}, turma.Professor=nome.nome, turma.Curso=nome.curso)
-    
+  function validarHoraSaida(){
+      const horaEntrada = turma.horaEntrada;
+      const horaSaida = turma.horaSaida;
+          if (horaEntrada && horaSaida && horaSaida <= horaEntrada) {
+            alert('A hora de saída deve ser maior do que a hora de entrada.');
+            setTurma({...turma,horaSaida: '',});
+          }
+  };
 
-            if (props.modoEdicao) {
-                fetch("https://129.146.68.51/aluno38-pfsii/turmas", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(turma)
-                }).then((resposta) => {
-                    return resposta.json();
-                }).then((dados) => {
-                    if (dados.status) {
-                        props.setModoEdicao(false);
-                        let turmas = props.listaTurmas;
-                        turmas.push(turma);
-                        props.exibirTabela(true);
-                        window.location.reload();
-                    }
-                    window.alert(dados.mensagem);
-                }).catch((erro) => {
-                    window.alert("Erro ao executar a requisição: " + erro.message);
+  useEffect(() => {
+    if (props.turma.professor) {
+      setProfessorSelecionado(props.turma.professor.nome);
+    }
+  }, [props.turma]);
+
+
+  const handleSubmit = (event) => {
+    const form = event.currentTarget;
+
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    } else {
+        if(!props.modoEdicao){
+          let listaProfessores = [];
+          for(const professor of listaProfessoresSelecionados){
+            listaProfessores.push({
+              professor:{codigo: professor.codigo}
+            })
+          }
+          fetch(urlBase2, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              "registro"    : turma.registro,
+              "data"        : turma.data,
+              "horaEntrada" : turma.horaEntrada,
+              "horaSaida"   : turma.horaSaida,
+              "professor"  : listaProfessores
+            }),
+          })
+            .then((resposta) => {
+              return resposta.json();
+            })
+            .then((dados) => {
+                props.setModoEdicao(false);
+                fetch(urlBase2, { method: "GET" })
+                .then((resposta) => {
+                  return resposta.json();
                 })
-            }
-            else {
-
-                fetch("https://129.146.68.51/aluno38-pfsii/turmas", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(turma)
-                }).then(() => {
-                    props.setModoEdicao(false);
-                    alert("Turma Gravada com Sucesso!");
-                    props.exibirTabela(true);
-                }).then(() => {
-                    window.location.reload();
-
+                .then((listaTurmas) => {
+                  if (Array.isArray(listaTurmas)) {
+                    props.setTurmas(listaTurmas);
+                  }
+                })
+                .catch((erro) => {
+                    window.alert("Erro ao obter a lista de turmas: " + erro.message);
                 });
-            }
-            setValidado(false);
+              window.alert(dados.mensagem);
+            })
+            .catch((erro) => {
+              window.alert("Erro ao executar a requisição: " + erro.message);
+            });
         }
-        else {
-            setValidado(true);
+        else{
+          fetch(urlBase2, {
+            method:"PUT",
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify(turma)
+          }).then((resposta) => {
+            return resposta.json();
+          });
+          window.alert("Atualizado com sucesso!");
+          props.setModoEdicao(false);
+          props.listaTurmas(true);
         }
-        evento.preventDefault();
-        evento.stopPropagation();
+        
+      props.exibirTabela(true);
     }
-
-    const [professorSelecionado, setProfessorSelecionado] = useState({});
-    const [listaProfessores, setListaProfessores] = useState([]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch("https://129.146.68.51/aluno38-pfsii/professor", { method: "GET" });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                const data = await response.json();
-                console.log("Data from API:", data);
-                setListaProfessores(data);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-        fetchData();
-    }, []);
+    setValidated(true);
+  }
 
 
+  return (
+    <Form className='mt-5' id='cadastroTurmas' noValidate validated={validated} onSubmit={handleSubmit} style={boxcadall_style}>
+      <hr />
 
-    return (
-        <div style={boxcadall_style}>
-            <Container className="text-center" style={boxcad_style}>
-                <h3>CADASTRO DE TURMAS</h3>
-            </Container>
-            <Form noValidate validated={validado} onSubmit={manipulaSbmissao}>
+      <div className='d-flex justify-content-center'><Form.Label className="fs-3 justify-content-center d-flex" style={boxcad_style}>Cadastro de Turmas</Form.Label></div>
+      <hr />
+      <Row className="mb-3">
+        <Form.Group as={Col} md="3">
+          <Form.Label>Registro</Form.Label>
+          <Form.Control
+            placeholder="Será gerado após cadastrar"
+              disabled
+              value={turma.registro}
+              id="registro" />
+        </Form.Group>
 
-                <Row>
+        <Form.Group as={Col} md="3">
+          <Form.Label>Data</Form.Label>
+          <Form.Control type="date"
+            placeholder="00/00/0000"
+            required
+            value={turma.data}
+            id="data"
+            onChange={manipularMudanca}
+            onBlur={validarData} />
+          <Form.Control.Feedback type="invalid">
+            Informe uma data válida!
+          </Form.Control.Feedback>
+        </Form.Group>
+      
+        <Form.Group as={Col} md="3">
+          <Form.Label>Hora de Entrada</Form.Label>
+          <Form.Control
+            required
+            type="time"
+            value={turma.horaEntrada}
+            id="horaEntrada"
+            onChange={manipularMudanca}
+          />
+          <Form.Control.Feedback type="invalid">
+            Insira a hora de entrada
+          </Form.Control.Feedback>
+        </Form.Group>
 
-                    <Form.Group className="mb-3">
-                        <Form.Label>Professor:</Form.Label>
-                        {}
-                        <BarraBusca
-                            placeHolder={"Informe um Professor"}
-                            dados={listaProfessores}
-                            campoChave={"cpf"}
-                            campoBusca={"nome"}
-                            funcaoSelecao={(professorSelecionado) => {
-                                setProfessorSelecionado(professorSelecionado);
-                                setTurma({ ...turma, nome: professorSelecionado });
-                            }}
-                            valor={""}
-                        />
-                        { console.log(listaProfessores) }
-                        <Form.Control.Feedback type="invalid">
-                            Por favor, insira o nome do Professor!
-                        </Form.Control.Feedback>
+        <Form.Group as={Col} md="3">
+          <Form.Label>Hora de Saída</Form.Label>
+          <Form.Control
+            required
+            type="time"
+            value={turma.horaSaida}
+            id="horaSaida"
+            onChange={manipularMudanca}
+            onBlur={validarHoraSaida}
+          />
+          <Form.Control.Feedback type="invalid">
+            Insira a hora de saída
+          </Form.Control.Feedback>
+        </Form.Group>
+      </Row>
+      <br/>
 
-                        <Form.Control
-                            type="text"
-                            placeholder="Nome do Professor"
-                            value={professorSelecionado?.nome || ""}
-                            onChange={(e) => {
+      <Row>
+        <Form.Group as={Col} md="6">
+            <Form.Label>Professores</Form.Label>
+            <CaixaSelecao endFonteDados={urlBase}
+                          campoChave={"codigo"}
+                          campoExibicao={"nome"}
+                          funcaoSelecao= {setProfessorSelecionado} />
+        </Form.Group>
+      </Row>
+      <br/>
+      <Row>
+        <Col md={1}>
+          <Form.Label>Código</Form.Label>
+          <Form.Control type="text"
+                        value={professorSelecionado.codigo}
+                        name="codigo"
+                        disabled />
+        </Col>
 
-                            }}
-                        />
+        <Col md={2}>
+          <Form.Label>Nome</Form.Label>
+          <Form.Control type="text"
+                        value={professorSelecionado.nome}
+                        name="nome"
+                        disabled />
+        </Col>
+        
+        <Col md={2}>
+          <Form.Label>CPF</Form.Label>
+          <Form.Control type="text"
+                        value={professorSelecionado.cpf}
+                        name="cpf"
+                        disabled />
+        </Col>
+        <Col md={1}>
+          <br />
+          <Button onClick={()=>{
+            setListaProfessoresSelecionados([...listaProfessoresSelecionados, professorSelecionado])
+          }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+            </svg>
+          </Button>
+        </Col>
+      </Row>
+      <br/>
+      <Row>
+        <TabelaProfessoresSelecionados listaProfessores={listaProfessoresSelecionados}
+                                      dadosTurma={turma}
+                                      setTurma={setTurma}
+                                      setListaProfessores={setListaProfessoresSelecionados} />
+      </Row>
 
-                    </Form.Group>
 
-                </Row>
 
-                <Row>                    
-
-                    
-                </Row>
-
-                <Row>
-                    <Col>
-                        <Form.Group className="mb-3">
-                            <Form.Label><strong>Data</strong></Form.Label>
-                            <Form.Control type="date" placeholder="" required value={turma.Data} id="Data" onChange={manipulaMudanca} />
-                        </Form.Group>
-                        <Form.Control.Feedback type="invalid"> Por Favor Informe a Data!</Form.Control.Feedback>
-                    </Col>
-
-                    <Col>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label><strong>Hora</strong></Form.Label>
-                            <Form.Select required aria-label="Default select example" value={turma.Hora} id="Hora" onChange={manipulaMudanca}>
-                                <option value={''} selected>Selecione</option>
-                                <option value="07:30">07:30</option>
-                                <option value="09:50">09:50</option>
-                                <option value="13:30">13:30</option>
-                                <option value="15:50">15:50</option>
-                            </Form.Select>
-                            <Form.Control.Feedback type="invalid"> Por Favor Informe a Hora!</Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-
-                    <Col>
-                        <Form.Group className="mb-3">
-                            <Form.Label><strong>Quantidade de Alunos</strong></Form.Label>
-                            <Form.Select required aria-label="Default select example" value={turma.QtdAlunos} id="QtdAlunos" onChange={manipulaMudanca}>
-                                <option value={''} selected>Selecione</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                            </Form.Select>
-                        </Form.Group>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col>
-                        <Form.Group className="mb-3">
-                            <Form.Label><strong>Tipo de Aula</strong></Form.Label>
-                            <Form.Select required aria-label="Default select example" value={turma.TipoDeAula} id="TipoDeAula" onChange={manipulaMudanca}>
-                                <option value={''} selected>Selecione</option>
-                                <option value="Prática">Prática</option>
-                                <option value="Estágio">Estágio</option>
-                            </Form.Select>
-                        </Form.Group>
-                    </Col>
-                </Row>
-                <Row>
-                    <center><Col>
-                        <Button type="submit" variant="primary">{props.modoEdicao ? 'Atualizar' : 'Cadastrar'}</Button>
-                    </Col>
-                        <Col>
-                            <Button type="submit" variant="primary" onClick={() => {
-                                props.exibirTabela(true);
-                            }}>Voltar</Button>
-                        </Col></center>
-                </Row>
-            </Form>
-        </div>
-    );
+      <br/>
+      
+      <Row className="m-3">
+        <Col md="10">
+          <Button variant="secondary" type="button" onClick={() => { props.exibirTabela(true)}}>Voltar</Button>
+        </Col>
+        <Col md="1">
+          <Button type="submit" md={{ offset: 5 }}>Cadastrar</Button>
+        </Col>
+      </Row>
+    </Form>
+  );
 }
